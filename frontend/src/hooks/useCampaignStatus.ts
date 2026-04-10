@@ -10,8 +10,11 @@ export function useCampaignStatus() {
   const refresh = useCallback(async () => {
     try {
       const data = await n8n.getCampaignStatus();
-      setStatus(data);
-      setError(null);
+      // Only set status if response has the expected shape
+      if (data && typeof data.status === "string") {
+        setStatus(data);
+        setError(null);
+      }
     } catch (e) {
       setError(e instanceof Error ? e.message : "خطأ في جلب الحالة");
     }
