@@ -42,11 +42,16 @@ async function apiFetch<T>(path: string, options?: RequestInit): Promise<T> {
     headers: { "Content-Type": "application/json" },
     ...options,
   });
+  const text = await res.text();
   if (!res.ok) {
-    const text = await res.text();
     throw new Error(`HTTP ${res.status}: ${text}`);
   }
-  return res.json();
+  if (!text || text.trim() === "") return {} as T;
+  try {
+    return JSON.parse(text);
+  } catch {
+    return {} as T;
+  }
 }
 
 export const n8n = {
