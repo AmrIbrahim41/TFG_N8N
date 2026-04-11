@@ -1,12 +1,15 @@
 "use client";
+import { useState } from "react";
 import ConnectionPanel from "@/components/ConnectionPanel";
 import CampaignForm from "@/components/CampaignForm";
 import ProgressDashboard from "@/components/ProgressDashboard";
 import ContactTable from "@/components/ContactTable";
+import SettingsModal from "@/components/SettingsModal";
 import { useCampaignStatus } from "@/hooks/useCampaignStatus";
 
 export default function Home() {
   const { status, refresh } = useCampaignStatus();
+  const [showSettings, setShowSettings] = useState(false);
   const isActiveCampaign = status?.status === "running" || status?.status === "paused";
   const hasCampaign = status && status.status !== "idle";
 
@@ -29,18 +32,28 @@ export default function Home() {
               <p className="text-emerald-100 text-xs">نظام الإرسال بالجملة</p>
             </div>
           </div>
-          {status && status.status !== "idle" && (
-            <div className="flex items-center gap-2 bg-white/15 rounded-xl px-3 py-1.5">
-              <div className={`w-2 h-2 rounded-full ${
-                status.status === "running" ? "bg-white animate-pulse" :
-                status.status === "paused"  ? "bg-yellow-300" : "bg-white/50"
-              }`} />
-              <span className="text-white text-xs font-medium">
-                {status.status === "running" ? "جاري الإرسال" :
-                 status.status === "paused"  ? "متوقف مؤقتاً" : "مكتمل"}
-              </span>
-            </div>
-          )}
+          <div className="flex items-center gap-2">
+            {status && status.status !== "idle" && (
+              <div className="flex items-center gap-2 bg-white/15 rounded-xl px-3 py-1.5">
+                <div className={`w-2 h-2 rounded-full ${
+                  status.status === "running" ? "bg-white animate-pulse" :
+                  status.status === "paused"  ? "bg-yellow-300" : "bg-white/50"
+                }`} />
+                <span className="text-white text-xs font-medium">
+                  {status.status === "running" ? "جاري الإرسال" :
+                   status.status === "paused"  ? "متوقف مؤقتاً" : "مكتمل"}
+                </span>
+              </div>
+            )}
+            <button
+              onClick={() => setShowSettings(true)}
+              title="إعدادات Evolution API"
+              className="w-9 h-9 flex items-center justify-center rounded-xl text-white transition-colors"
+              style={{ background: "rgba(255,255,255,0.15)" }}
+            >
+              ⚙️
+            </button>
+          </div>
         </div>
       </header>
 
@@ -58,6 +71,8 @@ export default function Home() {
       <footer className="text-center py-6 text-xs text-gray-400">
         TFG WhatsApp Sender © 2026
       </footer>
+
+      {showSettings && <SettingsModal onClose={() => setShowSettings(false)} />}
     </div>
   );
 }

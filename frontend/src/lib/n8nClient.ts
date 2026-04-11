@@ -86,6 +86,18 @@ export const n8n = {
       body: JSON.stringify({ action }),
     }),
 
+  getSettings: () =>
+    apiFetch<{ evoUrl: string; evoInstance: string; evoApiKey: string }>(
+      "/campaign-state",
+      { method: "POST", body: JSON.stringify({ action: "read-settings" }) }
+    ),
+
+  saveSettings: (cfg: { evoUrl: string; evoInstance: string; evoApiKey: string }) =>
+    apiFetch<{ success: boolean; evoUrl: string; evoInstance: string; evoApiKey: string }>(
+      "/campaign-state",
+      { method: "POST", body: JSON.stringify({ action: "write-settings", ...cfg }) }
+    ),
+
   exportFailed: async (): Promise<void> => {
     const res = await fetch(`${N8N_BASE}/campaign-export-failed`);
     const data = await res.json();
