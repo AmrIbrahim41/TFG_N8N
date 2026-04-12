@@ -106,9 +106,9 @@ export default function ProgressDashboard({ status, onRefresh }: Props) {
             <CtrlBtn onClick={() => handleControl("stop")} disabled={controlling}
               color="red" label="⏹ إيقاف نهائي" />
           )}
-          {(st === "completed" || st === "stopped") && failedCount > 0 && (
+          {(st === "completed" || st === "stopped") && (failedCount + pendingCount) > 0 && (
             <CtrlBtn onClick={handleExport} disabled={exporting}
-              color="indigo" label={exporting ? "⏳ جاري التصدير..." : "⬇ تحميل الفاشلين"} />
+              color="indigo" label={exporting ? "⏳ جاري التصدير..." : `⬇ تحميل غير المُرسل (${(failedCount + pendingCount).toLocaleString()})`} />
           )}
           <button onClick={onRefresh}
             className="px-4 py-2 rounded-xl text-xs font-medium text-gray-500 border border-gray-200 hover:bg-gray-50 transition-colors">
